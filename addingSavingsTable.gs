@@ -1,16 +1,6 @@
-const test = function () {
-  const ss = SpreadsheetApp.openById('######') // deliberately changed for security reasons
-  const sheet = ss.getSheetByName('###'); // deliberately changed for security reasons
-  const startColumn = sheet.getLastColumn() + 2;
-  const amountsColumnLetter = sheet.getRange(3, startColumn + 1).getA1Notation()[0];
-  Logger.log(`${amountsColumnLetter}:${amountsColumnLetter}`);
-}
-
 const insertTableForNewMonth = function (monthName) {
-  // const ss = SpreadsheetApp.getActiveSpreadsheet()
-  // const sheet = ss.getActiveSheet();
-  const ss = SpreadsheetApp.openById('1np3R-ZcBWhmEQFqiKjOnfmr2sp_fiheEI4wyl9xYlL0')
-  const sheet = ss.getSheetByName('2023');
+  // const ss = SpreadsheetApp.openById('######') // deliberately changed for security reasons
+  // const sheet = ss.getSheetByName('###'); // deliberately changed for security reasons
   const startColumn = sheet.getLastColumn() + 2;
 
   // Row 1 - month
