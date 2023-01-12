@@ -2,6 +2,7 @@ const insertTableForNewMonth = function (monthName) {
   // const ss = SpreadsheetApp.openById('######') // deliberately changed for security reasons
   // const sheet = ss.getSheetByName('###'); // deliberately changed for security reasons
   const startColumn = sheet.getLastColumn() + 2;
+  const rules = sheet.getConditionalFormatRules();
 
   // Row 1 - month
   const monthNameRange = sheet.getRange(1, startColumn, 1, 4);
@@ -43,6 +44,8 @@ const insertTableForNewMonth = function (monthName) {
   setRangeFormat(salaryAmountRange, '', 'center', 'normal', true)
   setRangeFormat(savedSpentHeadingRange, 'Saved/(spend)', 'left', 'bold')
   setRangeFormat(savedSpentAmountRange, savedSpentAmountFormula, 'center', 'normal', true, false, true);
+  rules.push(...setConditionalFormatting(savedSpentAmountRange))
+  // sheet.setConditionalFormatRules(setConditionalFormatting(savedSpentAmountRange));
 
   // Row 5 - date of transfer
   const dateOfTransferOfSalaryHeadingRange = sheet.getRange(5, startColumn, 1, 2);
@@ -50,6 +53,8 @@ const insertTableForNewMonth = function (monthName) {
 
   setRangeFormat(dateOfTransferOfSalaryHeadingRange, 'Date of transfer of salary', 'left', 'normal', false, true)
   setRangeFormat(dateOfTransferOfSalaryRange, new Date(), 'center', 'normal', false, true);
+
+  sheet.setConditionalFormatRules(rules);
 }
 
 const getCurrentMonthName = function () {
@@ -66,4 +71,24 @@ const setRangeFormat = function (range, valueOrFormula, horizontalAlignment, fon
   if (isNumber) range.setNumberFormat('0,000.00')
   if (isMerged) range.merge();
   isFormula ? range.setFormula(valueOrFormula) : range.setValue(valueOrFormula);
+}
+
+const setConditionalFormatting = function (range) {
+  const cfRuleOverZero = SpreadsheetApp.newConditionalFormatRule()
+    .whenNumberGreaterThan(0)
+    .setBackground('#34a853')
+    .setFontColor('#ffffe3')
+    .setRanges([range])
+    .build()
+
+  const cfRuleLessThanZero = SpreadsheetApp.newConditionalFormatRule()
+    .whenNumberLessThanOrEqualTo(0)
+    .setBackground('#ea4335')
+    .setFontColor('#ffffe3')
+    .setRanges([range])
+    .build()
+
+  let cfRules = [cfRuleOverZero, cfRuleLessThanZero]
+
+  return cfRules;
 }
