@@ -25,7 +25,15 @@ const insertTableForNewMonth = function (monthName) {
   const currentBalanceAmountRange = sheet.getRange(3, startColumn + 3,);
   const openingBalanceReferenceRange = sheet.getRange(3, openingBalanceAmountRange.getColumn() - 3);
   const openingBalanceAmount = openingBalanceReferenceRange.getValue();
-  const amountsColumnLetter = sheet.getRange(3, startColumn + 1).getA1Notation()[0];
+  const openingBalanceAmountA1Notation = sheet.getRange(3, startColumn + 1).getA1Notation();
+  let amountsColumnLetter;
+  if (openingBalanceAmountA1Notation.length == 2) {
+    amountsColumnLetter = openingBalanceAmountA1Notation[0];
+  } 
+  if (openingBalanceAmountA1Notation.length == 3) {
+    amountsColumnLetter = [openingBalanceAmountA1Notation[0], openingBalanceAmountA1Notation[1]].join('');
+  }
+  Logger.log(amountsColumnLetter);
   const currentBalanceAmountFormula = `=SUM(${amountsColumnLetter}:${amountsColumnLetter})`;
 
   setRangeFormat(openingBalanceHeadingRange, 'Opening balance', 'left')
