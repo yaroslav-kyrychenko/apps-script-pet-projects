@@ -1,3 +1,10 @@
+const onOpen = function(e) {
+  SpreadsheetApp.getUi()
+    .createMenu('Custom functions')
+    .addItem('Insert new savings/spending table', 'insertTableForNewMonth')
+    .addToUi();
+}
+
 const insertTableForNewMonth = function (monthName) {
   // const ss = SpreadsheetApp.openById('######') // deliberately changed for security reasons
   // const sheet = ss.getSheetByName('###'); // deliberately changed for security reasons
@@ -6,8 +13,7 @@ const insertTableForNewMonth = function (monthName) {
 
   // Row 1 - month
   const monthNameRange = sheet.getRange(1, startColumn, 1, 4);
-  setRangeFormat(monthNameRange, getCurrentMonthName(), 'center', 'bold', false, true)
-
+  setRangeFormat(monthNameRange, getMonthName(), 'center', 'bold', false, true);
 
   // Row 2 - headers
   const itemHeaderRange = sheet.getRange(2, startColumn,)
@@ -33,7 +39,6 @@ const insertTableForNewMonth = function (monthName) {
   if (openingBalanceAmountA1Notation.length == 3) {
     amountsColumnLetter = [openingBalanceAmountA1Notation[0], openingBalanceAmountA1Notation[1]].join('');
   }
-  Logger.log(amountsColumnLetter);
   const currentBalanceAmountFormula = `=SUM(${amountsColumnLetter}:${amountsColumnLetter})`;
 
   setRangeFormat(openingBalanceHeadingRange, 'Opening balance', 'left')
@@ -63,12 +68,16 @@ const insertTableForNewMonth = function (monthName) {
   setRangeFormat(dateOfTransferOfSalaryRange, new Date(), 'center', 'normal', false, true);
 
   sheet.setConditionalFormatRules(rules);
+  sheet.getRange(6, startColumn).activate();
 }
 
-const getCurrentMonthName = function () {
+const getMonthName = function () {
+  const monthName = Browser.inputBox('Enter the month. Leave blank for the current month');
+  if (monthName) return monthName;
+
   const date = new Date();
   const currentMonthName = date.toLocaleString('en-GB', { month: 'long' });
-  return currentMonthName;
+  if (!monthName) return currentMonthName;
 }
 
 const setRangeFormat = function (range, valueOrFormula, horizontalAlignment, fontWeight = 'normal', isNumber = false, isMerged = false, isFormula = false) {
