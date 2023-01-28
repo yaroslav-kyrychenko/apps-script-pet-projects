@@ -69,6 +69,43 @@ const insertTableForNewMonth = function (monthName) {
 
   sheet.setConditionalFormatRules(rules);
   sheet.getRange(6, startColumn).activate();
+
+  // Budget
+  const budgetHeadingRange = sheet.getRange(6, startColumn +2, 1, 2)
+  
+  const rentBudgetHeadingRange = sheet.getRange(7, startColumn + 2)
+  const rentBudgetAmountRange = sheet.getRange(7, startColumn + 3)
+  
+  const savingBudgetHeadingRange = sheet.getRange(8, startColumn + 2)
+  const savingBudgetAmountRange = sheet.getRange(8, startColumn + 3)
+  
+  const necessitiesBudgetHeadingRange = sheet.getRange(9, startColumn + 2)
+  const necessitiesBudgetAmountRange = sheet.getRange(9, startColumn + 3)
+  
+  const totalBudgetHeadingRange = sheet.getRange(10, startColumn + 2)
+  const totalBudgetAmountRange = sheet.getRange(10, startColumn + 3)
+  
+  const headroomHeadingRange = sheet.getRange(11, startColumn + 2);
+  const headroomAmountRange = sheet.getRange(11, startColumn + 3);
+
+  setRangeFormat(budgetHeadingRange, 'Budget', 'center', 'normal', false, true)
+  setRangeFormat(rentBudgetHeadingRange, 'Rent', 'left', 'normal')
+  setRangeFormat(savingBudgetHeadingRange, 'Saving', 'left', 'normal')
+  setRangeFormat(necessitiesBudgetHeadingRange, 'Necessities', 'left', 'normal')
+  setRangeFormat(totalBudgetHeadingRange, 'Total budget', 'left', 'bold')
+  setRangeFormat(headroomHeadingRange, 'Headroom', 'left', 'bold')
+
+  const rentBudgetValue = 1791.98;
+  const savingBudgetValue = 2000;
+  const necessitiesBudgetValue = 900;
+  const totalBudgetValue = rentBudgetValue + savingBudgetValue + necessitiesBudgetValue;
+  const headroomFormula = `=${salaryAmountRange.getA1Notation()}-${totalBudgetAmountRange.getA1Notation()}`;
+
+  setRangeFormat(rentBudgetAmountRange, rentBudgetValue, 'center', 'normal', true);
+  setRangeFormat(savingBudgetAmountRange, savingBudgetValue, 'center', 'normal', true)
+  setRangeFormat(necessitiesBudgetAmountRange, necessitiesBudgetValue, 'center', 'normal', true)
+  setRangeFormat(totalBudgetAmountRange, totalBudgetValue, 'center', 'bold', true)
+  setRangeFormat(headroomAmountRange, headroomFormula, 'center', 'bold', true, false, true)
 }
 
 const getMonthName = function () {
@@ -85,7 +122,7 @@ const setRangeFormat = function (range, valueOrFormula, horizontalAlignment, fon
     .setHorizontalAlignment(horizontalAlignment)
     .setFontWeight(fontWeight)
     .setBorder(true, true, true, true, null, null)
-  if (isNumber) range.setNumberFormat('0,000.00')
+  if (isNumber) range.setNumberFormat('#,###.00')
   if (isMerged) range.merge();
   isFormula ? range.setFormula(valueOrFormula) : range.setValue(valueOrFormula);
 }
